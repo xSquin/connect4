@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-aFq/bzH65dt+w6FI2ooMVUpc+21e0SRygnTpmBvdBgSdnuTN7QbdgL+OapgHtvPp" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/js/bootstrap.bundle.min.js" integrity="sha384-qKXV1j0HvMUeCBQ+QVp7JcfGl760yU08IQ+GpUo5hlbpg51QRiuqHAJz8+BrxE/N" crossorigin="anonymous"></script>
+    <style>
+        *{
+            box-sizing: border-box;
+        }
+        .col{
+            border: 1px solid black;
+            width: 50px;
+            height: 152.5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container text-center">
+        <div class="row align-items">
+            <div class="col"></div>
+            <div class="col"></div>
+            <div class="col"></div>
+            <div class="col"></div>
+            <div class="col"></div>
+            <div class="col"></div>
+            <div class="col"></div>
+        </div>
+        <div class="row align-items">
+            <div class="col"></div>
+            <div class="col"></div>
+            <div class="col"></div>
+            <div class="col"></div>
+            <div class="col"></div>
+            <div class="col"></div>
+            <div class="col"></div>
+        </div>
+        <div class="row align-items">
+            <div class="col"></div>
+            <div class="col"></div>
+            <div class="col"></div>
+            <div class="col"></div>
+            <div class="col"></div>
+            <div class="col"></div>
+            <div class="col"></div>
+        </div>
+        <div class="row align-items">
+            <div class="col"></div>
+            <div class="col"></div>
+            <div class="col"></div>
+            <div class="col"></div>
+            <div class="col"></div>
+            <div class="col"></div>
+            <div class="col"></div>
+        </div>
+        <div class="row align-items">
+            <div class="col"></div>
+            <div class="col"></div>
+            <div class="col"></div>
+            <div class="col"></div>
+            <div class="col"></div>
+            <div class="col"></div>
+            <div class="col"></div>
+        </div>
+        <div class="row align-items">
+            <div class="col"></div>
+            <div class="col"></div>
+            <div class="col"></div>
+            <div class="col"></div>
+            <div class="col"></div>
+            <div class="col"></div>
+            <div class="col"></div>
+        </div>
+    </div>
+    <script>
+        var turn = 1;
+        const items = document.querySelectorAll('.col');
+        const one_row = document.querySelector('.row').children;
+        items.forEach(function element(el, position){
+            el.addEventListener("click", obj => {
+                if(turn > 0 && obj.target.style.background == ""){
+                    items[move_down_position(position)].style.background = "red"
+                    console.log(check_win());
+                    turn = 0;
+                } else if(obj.target.style.background == ""){
+                    items[move_down_position(position)].style.background = "blue"
+                    console.log(check_win());
+                    turn = 1;
+                }
+            })
+        });
+        // efekt spadania itemu
+        function move_down_position(clicked_position){
+            var done = false;
+            var position_higher = 0;
+            while(!done){
+                if(items[find_multiples_of_position(clicked_position) - position_higher].style.background == ""){
+                    done = true;
+                    return find_multiples_of_position(clicked_position) - position_higher;
+                }
+                position_higher += one_row.length;
+            }
+        }
+        // szukanie wielokrotności zaznaczonej pozycji, zależna od move_down_position
+        function find_multiples_of_position(clicked_position){
+            let max_num = 0;
+            while(clicked_position < items.length){
+                if(clicked_position < items.length){
+                    max_num = clicked_position;
+                    clicked_position += 7;
+                }
+            }
+            return max_num;
+        }
+        function check_win(){
+            // sprawdzenie w poziomie
+            for(let rows = 0; rows < 6; rows++){
+                for(let col = 0; col < 4; col++){
+                    if(
+                        items[rows*7+col].style.background && 
+                        items[rows*7+col].style.background == items[rows*7+1+col].style.background &&
+                        items[rows*7+col].style.background == items[rows*7+2+col].style.background &&
+                        items[rows*7+col].style.background == items[rows*7+3+col].style.background
+                    ){
+                        return items[rows*7+col].style.background
+                    }
+                }
+            }
+            // sprawdzenie w pionie
+            for(let rows = 0; rows < 3; rows++){
+                for(let col = 0; col < 7; col++){
+                    if(
+                        items[(rows*7)+col].style.background && 
+                        items[(rows*7)+col].style.background == items[(rows*7)+col+(7*1)].style.background &&
+                        items[(rows*7)+col].style.background == items[(rows*7)+col+(7*2)].style.background &&
+                        items[(rows*7)+col].style.background == items[(rows*7)+col+(7*3)].style.background
+                    ){
+                        return items[(rows*7)+col].style.background
+                    }
+                }
+            }
+            //sprawdzanie na skos w prawo górę
+            for(let rows = 3; rows < 6; rows++){
+                for(let col = 0; col < 4; col++){
+                    if(
+                        items[(rows*7)+col].style.background && 
+                        items[(rows*7)+col].style.background == items[(rows*7)+col-(6*1)].style.background &&
+                        items[(rows*7)+col].style.background == items[(rows*7)+col-(6*2)].style.background &&
+                        items[(rows*7)+col].style.background == items[(rows*7)+col-(6*3)].style.background
+                    ){
+                        return items[(rows*7)+col].style.background
+                    }
+                }
+            }
+            //sprawdzanie na skos w lewo górę
+            for(let rows = 3; rows < 6; rows++){
+                for(let col = 3; col < 7; col++){
+                    if(
+                        items[(rows*7)+col].style.background && 
+                        items[(rows*7)+col].style.background == items[(rows*7)+col-(8*1)].style.background &&
+                        items[(rows*7)+col].style.background == items[(rows*7)+col-(8*2)].style.background &&
+                        items[(rows*7)+col].style.background == items[(rows*7)+col-(8*3)].style.background
+                    ){
+                        return items[(rows*7)+col].style.background
+                    }
+                }
+            }
+        }
+    </script>
+</body>
+</html>
