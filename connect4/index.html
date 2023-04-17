@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Connect four</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-aFq/bzH65dt+w6FI2ooMVUpc+21e0SRygnTpmBvdBgSdnuTN7QbdgL+OapgHtvPp" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/js/bootstrap.bundle.min.js" integrity="sha384-qKXV1j0HvMUeCBQ+QVp7JcfGl760yU08IQ+GpUo5hlbpg51QRiuqHAJz8+BrxE/N" crossorigin="anonymous"></script>
     <style>
@@ -13,8 +13,7 @@
         }
         .col{
             border: 1px solid black;
-            width: 50px;
-            height: 152.5px;
+            height: 175px;
         }
     </style>
 </head>
@@ -76,26 +75,34 @@
         </div>
     </div>
     <script>
-        var turn = 1;
+        // dopisać remis jeśli tak się stanie
+        let turn = 1;
         const items = document.querySelectorAll('.col');
         const one_row = document.querySelector('.row').children;
-        items.forEach(function element(el, position){
-            el.addEventListener("click", obj => {
-                if(turn > 0 && obj.target.style.background == ""){
-                    items[move_down_position(position)].style.background = "red"
-                    console.log(check_win());
-                    turn = 0;
-                } else if(obj.target.style.background == ""){
-                    items[move_down_position(position)].style.background = "blue"
-                    console.log(check_win());
-                    turn = 1;
-                }
-            })
-        });
+        // start
+        function start(){
+            items.forEach(function element(el, position){
+                el.addEventListener("click", obj => {
+                    if(turn > 0 && obj.target.style.background == ""){
+                        items[move_down_position(position)].style.background = "red"
+                        if(check_win() != undefined){
+                            end(check_win())
+                        }
+                        turn = 0;
+                    } else if(obj.target.style.background == ""){
+                        items[move_down_position(position)].style.background = "blue"
+                        if(check_win() != undefined){
+                            end(check_win())
+                        }
+                        turn = 1;
+                    }
+                })
+            });
+        }
         // efekt spadania itemu
         function move_down_position(clicked_position){
-            var done = false;
-            var position_higher = 0;
+            let done = false;
+            let position_higher = 0;
             while(!done){
                 if(items[find_multiples_of_position(clicked_position) - position_higher].style.background == ""){
                     done = true;
@@ -168,6 +175,34 @@
                     }
                 }
             }
+        }
+        //wypisanie kto wygrał
+        function end(winner) {
+            const endDiv = document.createElement("div");
+            endDiv.style.display = "flex";
+            endDiv.style.justifyContent = "center";
+            endDiv.style.alignItems = "center";
+            endDiv.style.position = "absolute";
+            endDiv.style.width = "100%";
+            endDiv.style.height = "100%";
+            endDiv.style.top = "0";
+            endDiv.style.left = "0";
+            endDiv.style.backgroundColor = "rgba(0, 0, 0, 0.5)";
+            document.body.appendChild(endDiv);
+
+            const winnerDiv = document.createElement("div");
+            winnerDiv.style.display = "flex";
+            winnerDiv.style.justifyContent = "center";
+            winnerDiv.style.alignItems = "center";
+            winnerDiv.style.width = "300px";
+            winnerDiv.style.height = "150px";
+            winnerDiv.style.backgroundColor = "white";
+            winnerDiv.style.borderRadius = "10px";
+            endDiv.appendChild(winnerDiv);
+            
+            const winnerText = document.createElement("h2");
+            winnerText.innerText = `${winner == "blue" ? "Niebieski" : "Czerwony"} wygrał!`;
+            winnerDiv.appendChild(winnerText);
         }
     </script>
 </body>
