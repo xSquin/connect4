@@ -11,93 +11,184 @@
         *{
             box-sizing: border-box;
         }
+        body{
+            background-color: rgb(23, 22, 31);
+        }
         .col{
-            border: 1px solid black;
-            height: 175px;
+            border: 1px solid rgb(57, 52, 73);
+            height: 162.8px;
+        }
+        .rows{
+            width: 1140px;
+        }
+        .move{
+            text-align: center;
+            font-size: 30px;
+            font-weight: bold;
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+            color: #ffffff;
+        }
+        .menu {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .menu h1 {
+            font-size: 36px;
+            font-weight: bold;
+            color: #ffffff;
+            margin-bottom: 30px;
+        }
+
+        .start-game, .game-rules {
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: bold;
+            color: #fff;
+            background-color: rgb(38, 35, 48);
+            border: none;
+            padding: 10px 30px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            transition: all 0.2s ease-in-out;
+        }
+
+        .start-game:hover, .game-rules:hover {
+            background-color: #a1a9b1;
+            transition: background-color 0,5s ease-in-out;
+        }
+
+        .color-move{
+            width: 30px;
+            height: 30px;
+            background-color: rgb(245, 31, 31);
+            margin: 5px;
         }
     </style>
 </head>
 <body>
-    <div class="container text-center">
-        <div class="row align-items">
-            <div class="col"></div>
-            <div class="col"></div>
-            <div class="col"></div>
-            <div class="col"></div>
-            <div class="col"></div>
-            <div class="col"></div>
-            <div class="col"></div>
-        </div>
-        <div class="row align-items">
-            <div class="col"></div>
-            <div class="col"></div>
-            <div class="col"></div>
-            <div class="col"></div>
-            <div class="col"></div>
-            <div class="col"></div>
-            <div class="col"></div>
-        </div>
-        <div class="row align-items">
-            <div class="col"></div>
-            <div class="col"></div>
-            <div class="col"></div>
-            <div class="col"></div>
-            <div class="col"></div>
-            <div class="col"></div>
-            <div class="col"></div>
-        </div>
-        <div class="row align-items">
-            <div class="col"></div>
-            <div class="col"></div>
-            <div class="col"></div>
-            <div class="col"></div>
-            <div class="col"></div>
-            <div class="col"></div>
-            <div class="col"></div>
-        </div>
-        <div class="row align-items">
-            <div class="col"></div>
-            <div class="col"></div>
-            <div class="col"></div>
-            <div class="col"></div>
-            <div class="col"></div>
-            <div class="col"></div>
-            <div class="col"></div>
-        </div>
-        <div class="row align-items">
-            <div class="col"></div>
-            <div class="col"></div>
-            <div class="col"></div>
-            <div class="col"></div>
-            <div class="col"></div>
-            <div class="col"></div>
-            <div class="col"></div>
+    <div class="menu">
+        <h1>Connect four - gra</h1>
+        <div class="start-game">Start</div>
+        <div class="game-rules">Zasady Gry</div>
+    </div>
+    <div class="game" style="display: none;">
+        <div class="move">Ruch: <div class="color-move"></div></div>
+        <div class="container text-center">
+            <div class="row align-items">
+                <div class="col"></div>
+                <div class="col"></div>
+                <div class="col"></div>
+                <div class="col"></div>
+                <div class="col"></div>
+                <div class="col"></div>
+                <div class="col"></div>
+            </div>
+            <div class="row align-items">
+                <div class="col"></div>
+                <div class="col"></div>
+                <div class="col"></div>
+                <div class="col"></div>
+                <div class="col"></div>
+                <div class="col"></div>
+                <div class="col"></div>
+            </div>
+            <div class="row align-items">
+                <div class="col"></div>
+                <div class="col"></div>
+                <div class="col"></div>
+                <div class="col"></div>
+                <div class="col"></div>
+                <div class="col"></div>
+                <div class="col"></div>
+            </div>
+            <div class="row align-items">
+                <div class="col"></div>
+                <div class="col"></div>
+                <div class="col"></div>
+                <div class="col"></div>
+                <div class="col"></div>
+                <div class="col"></div>
+                <div class="col"></div>
+            </div>
+            <div class="row align-items">
+                <div class="col"></div>
+                <div class="col"></div>
+                <div class="col"></div>
+                <div class="col"></div>
+                <div class="col"></div>
+                <div class="col"></div>
+                <div class="col"></div>
+            </div>
+            <div class="row align-items">
+                <div class="col"></div>
+                <div class="col"></div>
+                <div class="col"></div>
+                <div class="col"></div>
+                <div class="col"></div>
+                <div class="col"></div>
+                <div class="col"></div>
+            </div>
         </div>
     </div>
     <script>
-        // dopisać remis jeśli tak się stanie
         let turn = 1;
         const items = document.querySelectorAll('.col');
         const one_row = document.querySelector('.row').children;
+        const color_move = document.querySelector('.color-move');
+        const start_game = document.querySelector('.start-game');
+        const menu = document.querySelector('.menu');
+        const game = document.querySelector('.game');
+
+        start_game.addEventListener("click", () => {
+            menu.style.display = "none";
+            game.style.display = "block";
+            start();
+        });
+        //Prevent F12 & Prevent Ctrl+Shift+I & turn off right click
+        document.addEventListener('keydown', event => {
+            if (event.keyCode == 123 || event.ctrlKey && event.shiftKey && event.keyCode == 73) {
+                event.preventDefault();
+            }
+        });
+        document.addEventListener('contextmenu', event => event.preventDefault());
         // start
         function start(){
             items.forEach(function element(el, position){
                 el.addEventListener("click", obj => {
                     if(turn > 0 && obj.target.style.background == ""){
-                        items[move_down_position(position)].style.background = "red"
-                        if(check_win() != undefined){
+                        items[move_down_position(position)].style.background = "rgb(245, 31, 31)";
+                        color_move.style.backgroundColor = "rgb(18, 73, 223)";
+                        if(check_win() != null){
                             end(check_win())
                         }
                         turn = 0;
                     } else if(obj.target.style.background == ""){
-                        items[move_down_position(position)].style.background = "blue"
-                        if(check_win() != undefined){
+                        items[move_down_position(position)].style.background = "rgb(18, 73, 223)";
+                        color_move.style.backgroundColor = "rgb(245, 31, 31)";
+                        if(check_win() != null){
                             end(check_win())
                         }
                         turn = 1;
                     }
                 })
             });
+        }
+        // reset
+        function reset(){
+            turn = 1;
+            color_move.style.backgroundColor = "rgb(245, 31, 31)";
+            document.querySelector(".end_display_background").remove();
+            items.forEach(function element(el, position){
+                el.style.backgroundColor = "";
+            })
         }
         // efekt spadania itemu
         function move_down_position(clicked_position){
@@ -175,34 +266,75 @@
                     }
                 }
             }
+            // sprawdzenie remis
+            return [...items].filter(e => e.style.background == "").length == 0 ? "remis" : null;
         }
         //wypisanie kto wygrał
         function end(winner) {
-            const endDiv = document.createElement("div");
-            endDiv.style.display = "flex";
-            endDiv.style.justifyContent = "center";
-            endDiv.style.alignItems = "center";
-            endDiv.style.position = "absolute";
-            endDiv.style.width = "100%";
-            endDiv.style.height = "100%";
-            endDiv.style.top = "0";
-            endDiv.style.left = "0";
-            endDiv.style.backgroundColor = "rgba(0, 0, 0, 0.5)";
-            document.body.appendChild(endDiv);
+            const end_display_background = document.createElement("div");
+            end_display_background.className = "end_display_background";
+            end_display_background.style.display = "flex";
+            end_display_background.style.justifyContent = "center";
+            end_display_background.style.alignItems = "center";
+            end_display_background.style.position = "absolute";
+            end_display_background.style.width = "100%";
+            end_display_background.style.height = "100%";
+            end_display_background.style.top = "0";
+            end_display_background.style.left = "0";
+            end_display_background.style.backgroundColor = "rgba(0, 0, 0, 0.5)";
+            document.body.appendChild(end_display_background);
 
-            const winnerDiv = document.createElement("div");
-            winnerDiv.style.display = "flex";
-            winnerDiv.style.justifyContent = "center";
-            winnerDiv.style.alignItems = "center";
-            winnerDiv.style.width = "300px";
-            winnerDiv.style.height = "150px";
-            winnerDiv.style.backgroundColor = "white";
-            winnerDiv.style.borderRadius = "10px";
-            endDiv.appendChild(winnerDiv);
-            
+            const end_display = document.createElement("div");
+            end_display.style.display = "flex";
+            end_display.style.flexDirection = "column-reverse";
+            end_display.style.justifyContent = "center";
+            end_display.style.alignItems = "center";
+            end_display.style.width = "400px";
+            end_display.style.height = "200px";
+            end_display.style.backgroundColor = "white";
+            end_display.style.borderRadius = "10px";
+            end_display_background.appendChild(end_display);
+
+            const buttons = document.createElement("div");
+            buttons.style.display = "flex";
+            buttons.style.justifyContent = "center";
+            buttons.style.alignItems = "center";
+            buttons.style.marginTop = "20px";
+            end_display.appendChild(buttons);
+
+            const return_to_menu = document.createElement("div");
+            return_to_menu.style.display = "flex";
+            return_to_menu.style.justifyContent = "center";
+            return_to_menu.style.alignItems = "center";
+            return_to_menu.style.width = "150px";
+            return_to_menu.style.height = "50px";
+            return_to_menu.style.border = "1px solid black";
+            return_to_menu.innerText = "Powrót";
+            return_to_menu.style.cursor = "pointer";
+            return_to_menu.style.marginRight = "15px";
+            return_to_menu.style.transition = "all 0.2s ease-in-out";
+            return_to_menu.style.fontWeight = "bold";
+            return_to_menu.addEventListener("click", () => {location.reload();})
+            buttons.appendChild(return_to_menu);
+
+            const play_again_button = document.createElement("div");
+            play_again_button.style.display = "flex";
+            play_again_button.style.justifyContent = "center";
+            play_again_button.style.alignItems = "center";
+            play_again_button.style.width = "150px";
+            play_again_button.style.height = "50px";
+            play_again_button.style.border = "1px solid black";
+            play_again_button.innerText = "Zagraj ponownie!";
+            play_again_button.style.cursor = "pointer";
+            play_again_button.style.transition = "all 0.2s ease-in-out";
+            play_again_button.style.fontWeight = "bold";
+            play_again_button.addEventListener("click", () => {reset();})
+            buttons.appendChild(play_again_button);
+
             const winnerText = document.createElement("h2");
-            winnerText.innerText = `${winner == "blue" ? "Niebieski" : "Czerwony"} wygrał!`;
-            winnerDiv.appendChild(winnerText);
+            winnerText.innerHTML = `${winner == "remis" ? "<span style=\"color: gray\">Remis!</span>" : (winner == "rgb(245, 31, 31)" ? "<span style=\"color: red\">Czerwony</span>" : "<span style=\"color: blue\">Niebieski</span>") + " wygrał!"}`;
+            winnerText.style.fontWeight = "bold";
+            end_display.appendChild(winnerText);
         }
     </script>
 </body>
