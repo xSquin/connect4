@@ -139,6 +139,9 @@
         </div>
     </div>
     <script>
+        // menu -> zasady gry
+        // obliczać w handle click ile czasu - linijka
+        // naprawic w handle_click check_win
         let turn = 1;
         const items = document.querySelectorAll('.col');
         const one_row = document.querySelector('.row').children;
@@ -152,34 +155,49 @@
             game.style.display = "block";
             start();
         });
-        //Prevent F12 & Prevent Ctrl+Shift+I & turn off right click
+        //Prevent F12 & Prevent Ctrl+Shift+I & turn off right click & Prevent F11
+        /*
         document.addEventListener('keydown', event => {
-            if (event.keyCode == 123 || event.ctrlKey && event.shiftKey && event.keyCode == 73) {
+            if (event.keyCode == 123 || event.ctrlKey && event.shiftKey && event.keyCode == 73 || event.keyCode == 122) {
                 event.preventDefault();
             }
         });
         document.addEventListener('contextmenu', event => event.preventDefault());
-        // start
+        */
+        function handleClick(obj, position){
+            stop();
+            if(turn > 0 && obj.target.style.background == ""){
+                animate(move_down_position(position), "rgb(245, 31, 31)")
+                color_move.style.backgroundColor = "rgb(18, 73, 223)";
+                turn = 0;
+            } else if(obj.target.style.background == ""){
+                animate(move_down_position(position), "rgb(18, 73, 223)")
+                color_move.style.backgroundColor = "rgb(245, 31, 31)";
+                turn = 1;
+            }
+            setTimeout(resume, 2000);
+            if(check_win() != null){
+                end(check_win())
+            }
+        }
         function start(){
             items.forEach(function element(el, position){
-                el.addEventListener("click", obj => {
-                    if(turn > 0 && obj.target.style.background == ""){
-                        items[move_down_position(position)].style.background = "rgb(245, 31, 31)";
-                        color_move.style.backgroundColor = "rgb(18, 73, 223)";
-                        if(check_win() != null){
-                            end(check_win())
-                        }
-                        turn = 0;
-                    } else if(obj.target.style.background == ""){
-                        items[move_down_position(position)].style.background = "rgb(18, 73, 223)";
-                        color_move.style.backgroundColor = "rgb(245, 31, 31)";
-                        if(check_win() != null){
-                            end(check_win())
-                        }
-                        turn = 1;
-                    }
-                })
-            });
+                el.onclick = obj => {
+                    handleClick(obj, position);
+                }
+            })
+        }
+        function stop(){
+            items.forEach(function element(el, position){
+                el.onclick = null;
+            })
+        }
+        function resume(){
+            items.forEach(function element(el, position){
+                el.onclick = obj => {
+                    handleClick(obj, position);
+                };
+            })
         }
         // reset
         function reset(){
@@ -194,16 +212,6 @@
         function move_down_position(clicked_position){
             let done = false;
             let position_higher = 0;
-            while(!done){
-                if(items[find_multiples_of_position(clicked_position) - position_higher].style.background == ""){
-                    done = true;
-                    return find_multiples_of_position(clicked_position) - position_higher;
-                }
-                position_higher += one_row.length;
-            }
-        }
-        // szukanie wielokrotności zaznaczonej pozycji, zależna od move_down_position
-        function find_multiples_of_position(clicked_position){
             let max_num = 0;
             while(clicked_position < items.length){
                 if(clicked_position < items.length){
@@ -211,19 +219,46 @@
                     clicked_position += 7;
                 }
             }
-            return max_num;
+            while(!done){
+                if(items[max_num - position_higher].style.backgroundColor == ''){
+                    return max_num - position_higher;
+                }
+                position_higher += 7;
+            }
+        }
+        // animacja dla move_down_position
+        function animate(position, color){
+            let num = 0;
+            for(let i = position; i >= 0; i-=7){
+                if(i >= 0){
+                    num = i;
+                }
+            }
+            items[num].style.transition = "all 0.2s ease-in-out"
+            items[num].style.backgroundColor = color;
+            setInterval(() => {
+                if(position == num){
+                    clearInterval();
+                    return;
+                }
+                num += 7
+                items[num].style.transition = "all 0.2s ease-in-out"
+                items[num].style.backgroundColor = color;
+                items[num - 7].style.transition = "all 0.2s ease-in-out"
+                items[num - 7].style.backgroundColor = "";
+            }, 200);
         }
         function check_win(){
             // sprawdzenie w poziomie
             for(let rows = 0; rows < 6; rows++){
                 for(let col = 0; col < 4; col++){
                     if(
-                        items[rows*7+col].style.background && 
-                        items[rows*7+col].style.background == items[rows*7+1+col].style.background &&
-                        items[rows*7+col].style.background == items[rows*7+2+col].style.background &&
-                        items[rows*7+col].style.background == items[rows*7+3+col].style.background
+                        items[rows*7+col].style.backgroundColor && 
+                        items[rows*7+col].style.backgroundColor == items[rows*7+1+col].style.backgroundColor &&
+                        items[rows*7+col].style.backgroundColor == items[rows*7+2+col].style.backgroundColor &&
+                        items[rows*7+col].style.backgroundColor == items[rows*7+3+col].style.backgroundColor
                     ){
-                        return items[rows*7+col].style.background
+                        return items[rows*7+col].style.backgroundColor
                     }
                 }
             }
@@ -231,12 +266,12 @@
             for(let rows = 0; rows < 3; rows++){
                 for(let col = 0; col < 7; col++){
                     if(
-                        items[(rows*7)+col].style.background && 
-                        items[(rows*7)+col].style.background == items[(rows*7)+col+(7*1)].style.background &&
-                        items[(rows*7)+col].style.background == items[(rows*7)+col+(7*2)].style.background &&
-                        items[(rows*7)+col].style.background == items[(rows*7)+col+(7*3)].style.background
+                        items[(rows*7)+col].style.backgroundColor && 
+                        items[(rows*7)+col].style.backgroundColor == items[(rows*7)+col+(7*1)].style.backgroundColor &&
+                        items[(rows*7)+col].style.backgroundColor == items[(rows*7)+col+(7*2)].style.backgroundColor &&
+                        items[(rows*7)+col].style.backgroundColor == items[(rows*7)+col+(7*3)].style.backgroundColor
                     ){
-                        return items[(rows*7)+col].style.background
+                        return items[(rows*7)+col].style.backgroundColor
                     }
                 }
             }
@@ -244,12 +279,12 @@
             for(let rows = 3; rows < 6; rows++){
                 for(let col = 0; col < 4; col++){
                     if(
-                        items[(rows*7)+col].style.background && 
-                        items[(rows*7)+col].style.background == items[(rows*7)+col-(6*1)].style.background &&
-                        items[(rows*7)+col].style.background == items[(rows*7)+col-(6*2)].style.background &&
-                        items[(rows*7)+col].style.background == items[(rows*7)+col-(6*3)].style.background
+                        items[(rows*7)+col].style.backgroundColor && 
+                        items[(rows*7)+col].style.backgroundColor == items[(rows*7)+col-(6*1)].style.backgroundColor &&
+                        items[(rows*7)+col].style.backgroundColor == items[(rows*7)+col-(6*2)].style.backgroundColor &&
+                        items[(rows*7)+col].style.backgroundColor == items[(rows*7)+col-(6*3)].style.backgroundColor
                     ){
-                        return items[(rows*7)+col].style.background
+                        return items[(rows*7)+col].style.backgroundColor
                     }
                 }
             }
@@ -257,12 +292,12 @@
             for(let rows = 3; rows < 6; rows++){
                 for(let col = 3; col < 7; col++){
                     if(
-                        items[(rows*7)+col].style.background && 
-                        items[(rows*7)+col].style.background == items[(rows*7)+col-(8*1)].style.background &&
-                        items[(rows*7)+col].style.background == items[(rows*7)+col-(8*2)].style.background &&
-                        items[(rows*7)+col].style.background == items[(rows*7)+col-(8*3)].style.background
+                        items[(rows*7)+col].style.backgroundColor && 
+                        items[(rows*7)+col].style.backgroundColor == items[(rows*7)+col-(8*1)].style.backgroundColor &&
+                        items[(rows*7)+col].style.backgroundColor == items[(rows*7)+col-(8*2)].style.backgroundColor &&
+                        items[(rows*7)+col].style.backgroundColor == items[(rows*7)+col-(8*3)].style.backgroundColor
                     ){
-                        return items[(rows*7)+col].style.background
+                        return items[(rows*7)+col].style.backgroundColor
                     }
                 }
             }
