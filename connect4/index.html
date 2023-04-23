@@ -62,7 +62,7 @@
 
         .start-game:hover, .game-rules:hover {
             background-color: #a1a9b1;
-            transition: background-color 0,5s ease-in-out;
+            transition: background-color 0.5s ease-in-out;
         }
 
         .color-move{
@@ -71,6 +71,45 @@
             background-color: rgb(245, 31, 31);
             margin: 5px;
         }
+        .rules{
+            display: none;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            padding: 20px;
+            text-align: center;
+        }
+        .rules h1{
+            font-size: 36px;
+            font-weight: bold;
+            color: #ffffff;
+            margin-bottom: 30px;
+        }
+        .back-to-menu{
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: bold;
+            color: #fff;
+            background-color: rgb(38, 35, 48);
+            border: none;
+            padding: 10px 30px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            transition: all 0.2s ease-in-out;
+        }
+        .rules-text{
+            font-weight: bold;
+            color: #a1a9b1;
+            margin-bottom: 30px;
+        }
+        .rules-text li{
+            list-style-type: none;
+            margin: 10px;
+        }
+        .back-to-menu:hover{
+            background-color: #a1a9b1;
+            transition: background-color 0.5s ease-in-out;
+        }
     </style>
 </head>
 <body>
@@ -78,6 +117,19 @@
         <h1>Connect four - gra</h1>
         <div class="start-game">Start</div>
         <div class="game-rules">Zasady Gry</div>
+    </div>
+    <div class="rules">
+        <h1>Zasady Gry</h1>
+        <div class="rules-text">
+            <p>Connect 4, znana również jako Czwórki, to gra strategiczna dla dwóch graczy polegająca na ułożeniu czterech swoich pionków w pionie, poziomie lub na ukos, zanim zrobi to przeciwnik.</p>
+            <ul>
+                <li>1. Gracze wykonują ruchy na przemian, umieszczając swój pionek w wybranym przez siebie pionie kolumny planszy.</li>
+                <li>2. Pionek przesuwa się w dół kolumny, aż osiągnie dolną krawędź planszy lub napotka na inny pionek.</li>
+                <li>3. Gra kończy się remisem, gdy plansza zostanie wypełniona pionkami i żaden z graczy nie uda mu się ułożyć czterech pionków w linii.</li>
+                <li>4. Pierwszy gracz, który ułoży cztery swoje pionki w linii, wygrywa grę.</li>
+            </ul>
+        </div>
+        <div class="back-to-menu">Powrót</div>
     </div>
     <div class="game" style="display: none;">
         <div class="move">Ruch: <div class="color-move"></div></div>
@@ -139,45 +191,52 @@
         </div>
     </div>
     <script>
-        // menu -> zasady gry
-        // obliczać w handle click ile czasu - linijka
-        // naprawic w handle_click check_win
         let turn = 1;
+        var falling = false;
         const items = document.querySelectorAll('.col');
+        const game_rules = document.querySelector('.game-rules');
         const one_row = document.querySelector('.row').children;
         const color_move = document.querySelector('.color-move');
         const start_game = document.querySelector('.start-game');
         const menu = document.querySelector('.menu');
         const game = document.querySelector('.game');
+        const rules = document.querySelector('.rules');
+        const back_to_menu = document.querySelector('.back-to-menu');
 
         start_game.addEventListener("click", () => {
             menu.style.display = "none";
             game.style.display = "block";
             start();
         });
+
+        game_rules.addEventListener("click", () => {
+            menu.style.display = "none";
+            rules.style.display = "flex";
+        })
+
+        back_to_menu.addEventListener("click", () => {
+            location.reload();
+        })
+        
         //Prevent F12 & Prevent Ctrl+Shift+I & turn off right click & Prevent F11
-        /*
         document.addEventListener('keydown', event => {
-            if (event.keyCode == 123 || event.ctrlKey && event.shiftKey && event.keyCode == 73 || event.keyCode == 122) {
+            if (event.keyCode == 123 || event.ctrlKey && event.shiftKey && event.keyCode == 73) {
                 event.preventDefault();
             }
         });
         document.addEventListener('contextmenu', event => event.preventDefault());
-        */
+
         function handleClick(obj, position){
-            stop();
-            if(turn > 0 && obj.target.style.background == ""){
+            if(falling || obj.target.style.backgroundColor != "") return;
+                falling = true;
+            if(turn > 0){
                 animate(move_down_position(position), "rgb(245, 31, 31)")
                 color_move.style.backgroundColor = "rgb(18, 73, 223)";
                 turn = 0;
-            } else if(obj.target.style.background == ""){
+            } else {
                 animate(move_down_position(position), "rgb(18, 73, 223)")
                 color_move.style.backgroundColor = "rgb(245, 31, 31)";
                 turn = 1;
-            }
-            setTimeout(resume, 2000);
-            if(check_win() != null){
-                end(check_win())
             }
         }
         function start(){
@@ -187,28 +246,14 @@
                 }
             })
         }
-        function stop(){
-            items.forEach(function element(el, position){
-                el.onclick = null;
-            })
-        }
-        function resume(){
-            items.forEach(function element(el, position){
-                el.onclick = obj => {
-                    handleClick(obj, position);
-                };
-            })
-        }
-        // reset
         function reset(){
             turn = 1;
             color_move.style.backgroundColor = "rgb(245, 31, 31)";
             document.querySelector(".end_display_background").remove();
-            items.forEach(function element(el, position){
+            items.forEach(function element(el){
                 el.style.backgroundColor = "";
             })
         }
-        // efekt spadania itemu
         function move_down_position(clicked_position){
             let done = false;
             let position_higher = 0;
@@ -226,7 +271,6 @@
                 position_higher += 7;
             }
         }
-        // animacja dla move_down_position
         function animate(position, color){
             let num = 0;
             for(let i = position; i >= 0; i-=7){
@@ -234,19 +278,34 @@
                     num = i;
                 }
             }
-            items[num].style.transition = "all 0.2s ease-in-out"
+            items[num].style.transition = "all 0.15s ease-in-out"
             items[num].style.backgroundColor = color;
+            if(check_win() != null && (items[num+7] == null || items[num+7].style.backgroundColor != '')){
+                end(check_win())
+            }
+
+            if(items[num+7].style.backgroundColor != ""){
+                falling = false;
+            }
+
             setInterval(() => {
                 if(position == num){
                     clearInterval();
                     return;
                 }
                 num += 7
-                items[num].style.transition = "all 0.2s ease-in-out"
+                items[num].style.transition = "all 0.15s ease-in-out"
                 items[num].style.backgroundColor = color;
-                items[num - 7].style.transition = "all 0.2s ease-in-out"
+                items[num - 7].style.transition = "all 0.15s ease-in-out"
                 items[num - 7].style.backgroundColor = "";
-            }, 200);
+
+                if(items[num+7] == null || items[num+7].style.backgroundColor != '') {
+                    falling = false;
+                }
+                if(check_win() != null && (items[num+7] == null || items[num+7].style.backgroundColor != '')){
+                    end(check_win())
+                }
+            }, 150);
         }
         function check_win(){
             // sprawdzenie w poziomie
@@ -302,9 +361,8 @@
                 }
             }
             // sprawdzenie remis
-            return [...items].filter(e => e.style.background == "").length == 0 ? "remis" : null;
+            return [...items].filter(e => e.style.backgroundColor == "").length == 0 ? "remis" : null;
         }
-        //wypisanie kto wygrał
         function end(winner) {
             const end_display_background = document.createElement("div");
             end_display_background.className = "end_display_background";
