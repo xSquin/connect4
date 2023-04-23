@@ -240,7 +240,7 @@
         back_to_menu.addEventListener("click", () => {
             location.reload();
         })
-        /*
+        
         //Prevent F12 & Prevent Ctrl+Shift+I & turn off right click & Prevent F11
         document.addEventListener('keydown', event => {
             if (event.keyCode == 123 || event.ctrlKey && event.shiftKey && event.keyCode == 73) {
@@ -248,7 +248,7 @@
             }
         });
         document.addEventListener('contextmenu', event => event.preventDefault());
-        */
+        
         function handleClick(obj, position){
             if(falling || obj.target.style.backgroundColor != "") return;
                 falling = true;
