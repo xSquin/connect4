@@ -241,13 +241,14 @@
         back_to_menu.addEventListener("click", () => {
             location.reload();
         })
-
+        /*
         //Prevent F12 & Prevent Ctrl+Shift+I & turn off right click & Prevent F11
         document.addEventListener('keydown', event => {
             if (event.keyCode == 123 || event.ctrlKey && event.shiftKey && event.keyCode == 73) {
                 event.preventDefault();
             }
         });
+        */
         document.addEventListener('contextmenu', event => event.preventDefault());
         
         function handleClick(obj, position){
@@ -273,7 +274,8 @@
         function reset(){
             turn = 1;
             color_move.style.backgroundColor = "rgb(245, 31, 31)";
-            document.querySelector(".end_display_background").remove();
+            document.querySelector("#end_display_background").remove();
+            tsParticles.load("tsparticles")
             items.forEach(function element(el){
                 el.style.backgroundColor = "";
             })
@@ -418,6 +420,7 @@
             buttons.style.justifyContent = "center";
             buttons.style.alignItems = "center";
             buttons.style.marginTop = "20px";
+            buttons.style.zIndex = "2";
             end_display.appendChild(buttons);
 
             const return_to_menu = document.createElement("div");
@@ -432,6 +435,7 @@
             return_to_menu.style.marginRight = "15px";
             return_to_menu.style.transition = "all 0.2s ease-in-out";
             return_to_menu.style.fontWeight = "bold";
+            return_to_menu.style.zIndex = "2";
             return_to_menu.addEventListener("click", () => {location.reload();})
             buttons.appendChild(return_to_menu);
 
@@ -446,6 +450,7 @@
             play_again_button.style.cursor = "pointer";
             play_again_button.style.transition = "all 0.2s ease-in-out";
             play_again_button.style.fontWeight = "bold";
+            play_again_button.style.zIndex = "2";
             play_again_button.addEventListener("click", () => {reset();})
             buttons.appendChild(play_again_button);
 
