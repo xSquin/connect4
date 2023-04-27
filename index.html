@@ -18,6 +18,9 @@
             border: 1px solid rgb(57, 52, 73);
             height: 162.8px;
         }
+        .col:hover{
+            background-color: rgba(83, 75, 109, 0.39);
+        }
         .rows{
             width: 1140px;
         }
@@ -108,6 +111,7 @@
         }
         .back-to-menu:hover{
             background-color: #a1a9b1;
+            background-color: #b2c6da;
             transition: background-color 0.5s ease-in-out;
         }
         .imgs{
@@ -120,6 +124,21 @@
             width: 300px;
             height: 200px;
             margin: 50px;
+        }
+        .game{
+            overflow: hidden;
+        }
+        @keyframes movedown{
+            from{
+                transform: translateY(0);
+            }
+            to{
+                transform: translateY(2000px);
+            }
+        }
+        .move-down{
+            animation-name: movedown;
+            animation-duration: 2s;
         }
     </style>
 </head>
@@ -241,14 +260,14 @@
         back_to_menu.addEventListener("click", () => {
             location.reload();
         })
-        /*
+        
         //Prevent F12 & Prevent Ctrl+Shift+I & turn off right click & Prevent F11
         document.addEventListener('keydown', event => {
             if (event.keyCode == 123 || event.ctrlKey && event.shiftKey && event.keyCode == 73) {
                 event.preventDefault();
             }
         });
-        */
+        
         document.addEventListener('contextmenu', event => event.preventDefault());
         
         function handleClick(obj, position){
@@ -273,12 +292,20 @@
         }
         function reset(){
             turn = 1;
-            color_move.style.backgroundColor = "rgb(245, 31, 31)";
             document.querySelector("#end_display_background").remove();
-            tsParticles.load("tsparticles")
+            tsparticles.remove()
             items.forEach(function element(el){
-                el.style.backgroundColor = "";
+                el.classList.add("move-down");
             })
+            setTimeout(() => {
+                color_move.style.backgroundColor = "rgb(245, 31, 31)";
+                items.forEach(function element(el){
+                    el.style.backgroundColor = "";
+                    setTimeout(() => {
+                        el.classList.remove("move-down");
+                    }, 200);
+                })
+            },1500);
         }
         function move_down_position(clicked_position){
             let done = false;
@@ -413,6 +440,7 @@
             end_display.style.backgroundColor = "white";
             end_display.style.borderRadius = "10px";
             end_display.style.zIndex = "2";
+            end_display.style.boxShadow = "5px 5px";
             end_display_background.appendChild(end_display);
 
             const buttons = document.createElement("div");
@@ -435,7 +463,17 @@
             return_to_menu.style.marginRight = "15px";
             return_to_menu.style.transition = "all 0.2s ease-in-out";
             return_to_menu.style.fontWeight = "bold";
+            return_to_menu.style.borderRadius = "5px";
+            return_to_menu.style.boxShadow = "2px 2px";
             return_to_menu.style.zIndex = "2";
+            return_to_menu.addEventListener("mouseenter", () => {
+                return_to_menu.style.transition = "all 0.2s ease-in-out";
+                return_to_menu.style.backgroundColor = "rgba(83, 75, 109, 0.39)";
+            })
+            return_to_menu.addEventListener("mouseleave", () => {
+                return_to_menu.style.transition = "all 0.2s ease-in-out";
+                return_to_menu.style.backgroundColor = "white";
+            })
             return_to_menu.addEventListener("click", () => {location.reload();})
             buttons.appendChild(return_to_menu);
 
@@ -450,7 +488,17 @@
             play_again_button.style.cursor = "pointer";
             play_again_button.style.transition = "all 0.2s ease-in-out";
             play_again_button.style.fontWeight = "bold";
+            play_again_button.style.borderRadius = "5px";
+            play_again_button.style.boxShadow = "2px 2px";
             play_again_button.style.zIndex = "2";
+            play_again_button.addEventListener("mouseenter", () => {
+                play_again_button.style.transition = "all 0.2s ease-in-out";
+                play_again_button.style.backgroundColor = "rgba(83, 75, 109, 0.39)";
+            })
+            play_again_button.addEventListener("mouseleave", () => {
+                play_again_button.style.transition = "all 0.2s ease-in-out";
+                play_again_button.style.backgroundColor = "white";
+            })
             play_again_button.addEventListener("click", () => {reset();})
             buttons.appendChild(play_again_button);
 
@@ -482,10 +530,10 @@
                     }
                     },
                     "number": {
-                    "value": 300,
+                    "value": 100,
                     "density": {
                         "enable": true,
-                        "area": 800
+                        "area": 600
                     }
                     },
                     "opacity": {
